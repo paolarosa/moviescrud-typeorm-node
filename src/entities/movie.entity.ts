@@ -6,7 +6,7 @@ class Movie {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @Column({ length: 50, unique: true})
+    @Column({type:"varchar", length: 50, unique: true})
     name: string
 
     @Column({type:"text", nullable: true})

@@ -1,16 +1,18 @@
 import { z } from 'zod'
-import { hashSync } from 'bcryptjs'
 
 const movieSchema = z.object({
-    id: z.number(),
-    name: z.string().min(2).max(50),
+    name: z.string().max(50),
     description: z.string().optional().nullable(),
-    duration: z.number(),
+    duration: z.number().gt(0),
     price: z.number()
 })
 
-const returnigAllMovies = movieSchema.array()
+const returnMovieSchema = movieSchema.extend({
+    id: z.number(),
+})
 
-const movieUpdateSchema = movieSchema.partial()
+const returnigAllMovies = returnMovieSchema.array()
 
-export { movieSchema, returnigAllMovies, movieUpdateSchema }
+const movieUpdateSchema = returnMovieSchema.partial()
+
+export { movieSchema, returnigAllMovies, movieUpdateSchema, returnMovieSchema }

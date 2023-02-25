@@ -7,18 +7,27 @@ import { returnigAllMovies } from '../schemas/movies.schemas'
 const listMoviesService = async (page: any, perPage: any, order: any, sort: any): Promise<any> => {
 
   const movieRepository: Repository<Movie> = AppDataSource.getRepository(Movie)
-
+  if(!page && perPage < 0){
+    perPage = 5
+  }
   if (!+page) {
     page = 1;
   }
   if (page <= 0) {
     page = 1
   } 
+  
+  if(perPage < 0){
+    page = 1 
+  }
+  if(/* !Number.isInteger(perPage) && perPage < 0  &&  */perPage > 5 && perPage < 0){
+  perPage = 5
+  }
+  
+
 
   const take: number = Number(perPage) || 5
   const skip: number = Number(page) || 1
-console.log(1,take)
-console.log(2,skip)
   /*    if (page <= 0 || perPage <= 0) {
        page = 1;
        perPage = 5;
@@ -31,34 +40,42 @@ console.log(2,skip)
      }   */
 
 
-  let prevPage: any = `http://localhost:3000/movies?page=${skip - 1}&perPage=${take}`;
+  let prevPage: string | null = `http://localhost:3000/movies?page=${skip - 1}&perPage=${take}`;
   if (page - 1 <= 0) {
     prevPage = null;
   }
-  let nextPage: any = `http://localhost:3000/movies?page=${+skip + 1}&perPage=${take}`;
-  const findMovies = await movieRepository.find({
+  let nextPage: string | null  = `http://localhost:3000/movies?page=${+skip + 1}&perPage=${take}`; 
+  
+  
+ 
+  const [findMovies,count] = await movieRepository.findAndCount({
     take: take,
     skip: take * (skip - 1),
     order: {
-      id: {
+        [sort]: order
+      
+      
+      /*  id: {
         direction: order
-      }
-    },
-    /*    sort: {} */
-  })
-  const count = findMovies.length
-  /*     const pages = count / 5
-      if(count % 5 === 0 && pages === +page || queryResult.rows.length < 5){
-        nextPage = null;
       }  */
+    } 
+    
+  }) 
+  nextPage = count <= perPage * page? null : `http://localhost:3000/movies?page=${+skip + 1}&perPage=${take}` 
+/*   const pages = count / perPage
+  if(count % 5 === 0 && pages === +page || findMovies.length < 5){
+    nextPage = null;
+  }    */
+
 
   const movies = returnigAllMovies.parse(findMovies)
   const result = {
     prevPage: prevPage,
     nextPage: nextPage,
-    count: count,
+    count,
     data: movies
   }
+  
   return result
 }
 
