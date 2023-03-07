@@ -4,7 +4,7 @@ const movieSchema = z.object({
     name: z.string().max(50),
     description: z.string().optional().nullable(),
     duration: z.number().gt(0),
-    price: z.number()
+    price: z.number().int()
 })
 
 const returnMovieSchema = movieSchema.extend({

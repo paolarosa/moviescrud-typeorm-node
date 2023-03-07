@@ -12,7 +12,6 @@ describe('POST /movies', () => {
   const baseUrl: string = '/movies';
   const movieRepo: iMovieRepo = AppDataSource.getRepository(Movie);
 
-  console.log(movieRepo)
   beforeAll(async () => {
     await AppDataSource.initialize()
       .then((res) => (connection = res))

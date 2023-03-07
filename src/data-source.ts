@@ -6,7 +6,6 @@ import path from 'path'
 const dataSourceConfig = (): DataSourceOptions => {
     
     const entitiesPath = path.join(__dirname, './entities/**.{ts,js}')
-    console.log(entitiesPath)
     const migrationsPath = path.join(__dirname, './migrations/**.{ts,js}')
 
     const dbUrl: string | undefined = process.env.DATABASE_URL
